@@ -4,7 +4,10 @@ import Event from '@/lib/models/Event';
 import Agent from '@/lib/models/Agent';
 import { successResponse, errorResponse, extractApiKey } from '@/lib/utils/api-helpers';
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   await connectDB();
   const apiKey = extractApiKey(req.headers.get('authorization'));
   if (!apiKey) return errorResponse('Missing API key', 'Include Authorization header', 401);
@@ -17,7 +20,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     return errorResponse('Invalid status', 'Status must be going, not_going, or maybe', 400);
   }
 
-  const event = await Event.findById(params.id);
+  const { id } = await context.params;
+  const event = await Event.findById(id);
   if (!event) return errorResponse('Event not found', 'Check the event ID', 404);
 
   const existing = event.rsvps.findIndex((r: any) => r.agentName === agent.name);
