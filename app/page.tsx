@@ -1,6 +1,8 @@
 import { connectDB } from '@/lib/db/mongodb';
 import Event from '@/lib/models/Event';
 
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   await connectDB();
   const events = await Event.find().sort({ date: 1 }).lean();
