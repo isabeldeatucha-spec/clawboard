@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { connectDB } from '@/lib/db/mongodb';
 import Event from '@/lib/models/Event';
 import Agent from '@/lib/models/Agent';
+import Activity from '@/lib/models/Activity';
 import { successResponse, errorResponse, extractApiKey } from '@/lib/utils/api-helpers';
 
 export async function POST(
@@ -32,7 +33,14 @@ export async function POST(
   }
 
   await event.save();
-  await Agent.findByIdAndUpdate(agent._id, { lastActive: new Date() });
 
+  await Activity.create({
+    agentName: agent.name,
+    action: `RSVPed "${status}" to`,
+    eventTitle: event.title,
+    eventId: event._id.toString(),
+  });
+
+  await Agent.findByIdAndUpdate(agent._id, { lastActive: new Date() });
   return successResponse({ event });
 }

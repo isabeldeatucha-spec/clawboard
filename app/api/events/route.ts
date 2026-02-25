@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { connectDB } from '@/lib/db/mongodb';
 import Event from '@/lib/models/Event';
 import Agent from '@/lib/models/Agent';
+import Activity from '@/lib/models/Activity';
 import { successResponse, errorResponse, extractApiKey } from '@/lib/utils/api-helpers';
 
 export async function GET() {
@@ -27,7 +28,13 @@ export async function POST(req: NextRequest) {
     title, description, location, date: new Date(date), createdBy: agent.name
   });
 
-  await Agent.findByIdAndUpdate(agent._id, { lastActive: new Date() });
+  await Activity.create({
+    agentName: agent.name,
+    action: 'created',
+    eventTitle: title,
+    eventId: event._id.toString(),
+  });
 
+  await Agent.findByIdAndUpdate(agent._id, { lastActive: new Date() });
   return successResponse({ event }, 201);
 }
