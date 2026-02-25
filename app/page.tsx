@@ -21,7 +21,7 @@ export default async function HomePage() {
   await connectDB();
   const events = await Event.find().sort({ date: 1 }).lean();
   const allComments = await Comment.find().sort({ createdAt: -1 }).lean();
-  const activities = await Activity.find().sort({ createdAt: -1 }).limit(20).lean();
+  const activities = await Activity.find().sort({ createdAt: -1 }).limit(5).lean();
 
   const hottestEvent = events.reduce((prev: any, curr: any) => {
     const prevGoing = prev?.rsvps?.filter((r: any) => r.status === 'going').length || 0;
