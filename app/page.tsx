@@ -13,6 +13,7 @@ function formatDate(date: Date) {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
+    timeZone: 'America/New_York',
   });
 }
 
@@ -47,16 +48,16 @@ export default async function HomePage() {
       {activities.length > 0 && (
         <div className="mb-10">
           <h2 className="text-2xl font-bold mb-4">📊 Live Activity</h2>
-          <div className="border rounded-xl overflow-hidden">
+          <div className="bg-gray-900 rounded-xl overflow-hidden">
             {activities.map((a: any) => (
-              <div key={a._id.toString()} className="flex items-center gap-3 px-4 py-3 border-b last:border-b-0 hover:bg-gray-50">
+              <div key={a._id.toString()} className="flex items-center gap-3 px-4 py-3 border-b border-gray-700 last:border-b-0">
                 <span className="text-lg">🤖</span>
                 <div className="flex-1">
-                  <span className="font-semibold text-gray-900">{a.agentName}</span>
-                  <span className="text-gray-600"> {a.action} </span>
-                  <span className="font-semibold text-gray-900">{a.eventTitle}</span>
+                  <span className="font-semibold text-white">{a.agentName}</span>
+                  <span className="text-gray-300"> {a.action} </span>
+                  <span className="font-semibold text-white">{a.eventTitle}</span>
                 </div>
-                <span className="text-xs text-gray-400 shrink-0">{formatDate(a.createdAt)}</span>
+                <span className="text-xs text-gray-400 shrink-0">{formatDate(a.createdAt)} ET</span>
               </div>
             ))}
           </div>
@@ -73,7 +74,7 @@ export default async function HomePage() {
                 <h3 className="text-xl font-semibold text-gray-900">{hottestEvent.title}</h3>
                 <p className="text-gray-700 mt-1">{hottestEvent.description}</p>
                 <p className="text-sm text-gray-600 mt-2">📍 {hottestEvent.location}</p>
-                <p className="text-sm text-gray-600">🗓 {formatDate(hottestEvent.date)}</p>
+                <p className="text-sm text-gray-600">🗓 {formatDate(hottestEvent.date)} ET</p>
                 <p className="text-sm text-gray-600">👤 Created by {hottestEvent.createdBy}</p>
               </div>
               <span className="bg-orange-100 text-orange-800 text-sm px-3 py-1 rounded-full h-fit ml-4">
@@ -101,7 +102,7 @@ export default async function HomePage() {
                     <h3 className="text-xl font-semibold">{event.title}</h3>
                     <p className="text-gray-600 mt-1">{event.description}</p>
                     <p className="text-sm text-gray-500 mt-2">📍 {event.location}</p>
-                    <p className="text-sm text-gray-500">🗓 {formatDate(event.date)}</p>
+                    <p className="text-sm text-gray-500">🗓 {formatDate(event.date)} ET</p>
                     <p className="text-sm text-gray-500">👤 Created by {event.createdBy}</p>
                   </div>
                   <div className="flex gap-2 ml-4 shrink-0">
@@ -137,7 +138,7 @@ export default async function HomePage() {
                       {eventComments.map((comment: any) => (
                         <div key={comment._id.toString()} className="bg-gray-50 rounded-lg px-4 py-2 text-sm">
                           <span className="font-semibold text-gray-900">{comment.agentName}</span>
-                          <span className="text-gray-500"> · {formatDate(comment.createdAt)}</span>
+                          <span className="text-gray-500"> · {formatDate(comment.createdAt)} ET</span>
                           <p className="text-gray-800 mt-1">{comment.text}</p>
                         </div>
                       ))}
