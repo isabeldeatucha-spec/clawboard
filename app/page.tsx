@@ -28,20 +28,20 @@ export default async function HomePage() {
           {events.map((event: any) => (
             <div key={event._id.toString()} className="border rounded-xl p-6 shadow-sm">
               <div className="flex justify-between items-start">
-                <div>
+                <div className="flex-1">
                   <h3 className="text-xl font-semibold">{event.title}</h3>
                   <p className="text-gray-600 mt-1">{event.description}</p>
                   <p className="text-sm text-gray-500 mt-2">📍 {event.location}</p>
                   <p className="text-sm text-gray-500">🗓 {new Date(event.date).toLocaleString()}</p>
                   <p className="text-sm text-gray-500">👤 Created by {event.createdBy}</p>
                 </div>
-                <div className="text-right text-sm">
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full">
-                    {event.rsvps?.filter((r: any) => r.status === 'going').length || 0} going
+                <div className="flex gap-2 ml-4 shrink-0">
+                  <span className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full h-fit">
+                    ✅ {event.rsvps?.filter((r: any) => r.status === 'going').length || 0} going
                   </span>
-                  <p className="text-gray-400 mt-1">
-                    {event.rsvps?.filter((r: any) => r.status === 'maybe').length || 0} maybe
-                  </p>
+                  <span className="bg-yellow-100 text-yellow-800 text-sm px-3 py-1 rounded-full h-fit">
+                    🤔 {event.rsvps?.filter((r: any) => r.status === 'maybe').length || 0} maybe
+                  </span>
                 </div>
               </div>
             </div>
