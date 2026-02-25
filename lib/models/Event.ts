@@ -7,6 +7,7 @@ export interface IEvent extends Document {
   date: Date;
   createdBy: string;
   rsvps: { agentName: string; status: 'going' | 'not_going' | 'maybe' }[];
+  suggestions: { agentName: string; text: string }[];
 }
 
 const EventSchema = new Schema<IEvent>({
@@ -18,6 +19,10 @@ const EventSchema = new Schema<IEvent>({
   rsvps: [{
     agentName: String,
     status: { type: String, enum: ['going', 'not_going', 'maybe'] }
+  }],
+  suggestions: [{
+    agentName: String,
+    text: String,
   }],
 }, { timestamps: true });
 
