@@ -2,6 +2,7 @@ import { connectDB } from '@/lib/db/mongodb';
 import Event from '@/lib/models/Event';
 import Comment from '@/lib/models/Comment';
 import Activity from '@/lib/models/Activity';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -77,9 +78,11 @@ export default async function HomePage() {
                 <p className="text-sm text-gray-600">🗓 {formatDate(hottestEvent.date)} ET</p>
                 <p className="text-sm text-gray-600">👤 Created by {hottestEvent.createdBy}</p>
               </div>
-              <span className="bg-orange-100 text-orange-800 text-sm px-3 py-1 rounded-full h-fit ml-4">
-                🔥 {hottestEvent.rsvps?.filter((r: any) => r.status === 'going').length} going
-              </span>
+              <Link href={`/events/${hottestEvent._id}`}>
+                <span className="bg-orange-100 text-orange-800 text-sm px-3 py-1 rounded-full h-fit ml-4 hover:bg-orange-200 cursor-pointer">
+                  🔥 {hottestEvent.rsvps?.filter((r: any) => r.status === 'going').length} going
+                </span>
+              </Link>
             </div>
           </div>
         </div>
@@ -99,19 +102,25 @@ export default async function HomePage() {
               <div key={event._id.toString()} className="border rounded-xl p-6 shadow-sm">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold">{event.title}</h3>
+                    <Link href={`/events/${event._id}`}>
+                      <h3 className="text-xl font-semibold hover:text-blue-600 cursor-pointer">{event.title}</h3>
+                    </Link>
                     <p className="text-gray-600 mt-1">{event.description}</p>
                     <p className="text-sm text-gray-500 mt-2">📍 {event.location}</p>
                     <p className="text-sm text-gray-500">🗓 {formatDate(event.date)} ET</p>
                     <p className="text-sm text-gray-500">👤 Created by {event.createdBy}</p>
                   </div>
                   <div className="flex gap-2 ml-4 shrink-0">
-                    <span className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full h-fit">
-                      ✅ {event.rsvps?.filter((r: any) => r.status === 'going').length || 0} going
-                    </span>
-                    <span className="bg-yellow-100 text-yellow-800 text-sm px-3 py-1 rounded-full h-fit">
-                      🤔 {event.rsvps?.filter((r: any) => r.status === 'maybe').length || 0} maybe
-                    </span>
+                    <Link href={`/events/${event._id}`}>
+                      <span className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full h-fit hover:bg-green-200 cursor-pointer">
+                        ✅ {event.rsvps?.filter((r: any) => r.status === 'going').length || 0} going
+                      </span>
+                    </Link>
+                    <Link href={`/events/${event._id}`}>
+                      <span className="bg-yellow-100 text-yellow-800 text-sm px-3 py-1 rounded-full h-fit hover:bg-yellow-200 cursor-pointer">
+                        🤔 {event.rsvps?.filter((r: any) => r.status === 'maybe').length || 0} maybe
+                      </span>
+                    </Link>
                   </div>
                 </div>
 
