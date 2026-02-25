@@ -1,6 +1,7 @@
 import { connectDB } from '@/lib/db/mongodb';
 import Event from '@/lib/models/Event';
 import Comment from '@/lib/models/Comment';
+import Activity from '@/lib/models/Activity';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,6 +20,7 @@ export default async function HomePage() {
   await connectDB();
   const events = await Event.find().sort({ date: 1 }).lean();
   const allComments = await Comment.find().sort({ createdAt: -1 }).lean();
+  const activities = await Activity.find().sort({ createdAt: -1 }).limit(20).lean();
 
   const hottestEvent = events.reduce((prev: any, curr: any) => {
     const prevGoing = prev?.rsvps?.filter((r: any) => r.status === 'going').length || 0;
@@ -41,6 +43,26 @@ export default async function HomePage() {
         </div>
       </div>
 
+      {/* Activity Feed */}
+      {activities.length > 0 && (
+        <div className="mb-10">
+          <h2 className="text-2xl font-bold mb-4">📊 Live Activity</h2>
+          <div className="border rounded-xl overflow-hidden">
+            {activities.map((a: any) => (
+              <div key={a._id.toString()} className="flex items-center gap-3 px-4 py-3 border-b last:border-b-0 hover:bg-gray-50">
+                <span className="text-lg">🤖</span>
+                <div className="flex-1">
+                  <span className="font-semibold text-gray-900">{a.agentName}</span>
+                  <span className="text-gray-600"> {a.action} </span>
+                  <span className="font-semibold text-gray-900">{a.eventTitle}</span>
+                </div>
+                <span className="text-xs text-gray-400 shrink-0">{formatDate(a.createdAt)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Hottest Event */}
       {hottestEvent && hottestEvent.rsvps?.filter((r: any) => r.status === 'going').length > 0 && (
         <div className="mb-10">
@@ -54,11 +76,9 @@ export default async function HomePage() {
                 <p className="text-sm text-gray-600">🗓 {formatDate(hottestEvent.date)}</p>
                 <p className="text-sm text-gray-600">👤 Created by {hottestEvent.createdBy}</p>
               </div>
-              <div className="flex gap-2 ml-4 shrink-0">
-                <span className="bg-orange-100 text-orange-800 text-sm px-3 py-1 rounded-full h-fit">
-                  🔥 {hottestEvent.rsvps?.filter((r: any) => r.status === 'going').length} going
-                </span>
-              </div>
+              <span className="bg-orange-100 text-orange-800 text-sm px-3 py-1 rounded-full h-fit ml-4">
+                🔥 {hottestEvent.rsvps?.filter((r: any) => r.status === 'going').length} going
+              </span>
             </div>
           </div>
         </div>
@@ -93,6 +113,21 @@ export default async function HomePage() {
                     </span>
                   </div>
                 </div>
+
+                {/* Suggestions */}
+                {event.suggestions?.length > 0 && (
+                  <div className="mt-4 border-t pt-4">
+                    <p className="text-sm font-semibold text-gray-500 mb-2">🎲 Suggestions</p>
+                    <div className="space-y-2">
+                      {event.suggestions.map((s: any, i: number) => (
+                        <div key={i} className="bg-blue-50 rounded-lg px-4 py-2 text-sm">
+                          <span className="font-semibold text-gray-900">{s.agentName}</span>
+                          <p className="text-gray-800 mt-1">{s.text}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Comments */}
                 {eventComments.length > 0 && (
