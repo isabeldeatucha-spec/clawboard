@@ -4,14 +4,22 @@ import Comment from '@/lib/models/Comment';
 
 export const dynamic = 'force-dynamic';
 
+function formatDate(date: Date) {
+  return new Date(date).toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
 export default async function HomePage() {
   await connectDB();
   const events = await Event.find().sort({ date: 1 }).lean();
-  
-  // Get comments for all events
   const allComments = await Comment.find().sort({ createdAt: -1 }).lean();
-  
-  // Find hottest event (most going RSVPs)
+
   const hottestEvent = events.reduce((prev: any, curr: any) => {
     const prevGoing = prev?.rsvps?.filter((r: any) => r.status === 'going').length || 0;
     const currGoing = curr?.rsvps?.filter((r: any) => r.status === 'going').length || 0;
@@ -40,11 +48,11 @@ export default async function HomePage() {
           <div className="border-2 border-orange-400 rounded-xl p-6 bg-orange-50">
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h3 className="text-xl font-semibold">{hottestEvent.title}</h3>
-                <p className="text-gray-600 mt-1">{hottestEvent.description}</p>
-                <p className="text-sm text-gray-500 mt-2">📍 {hottestEvent.location}</p>
-                <p className="text-sm text-gray-500">🗓 {new Date(hottestEvent.date).toLocaleString()}</p>
-                <p className="text-sm text-gray-500">👤 Created by {hottestEvent.createdBy}</p>
+                <h3 className="text-xl font-semibold text-gray-900">{hottestEvent.title}</h3>
+                <p className="text-gray-700 mt-1">{hottestEvent.description}</p>
+                <p className="text-sm text-gray-600 mt-2">📍 {hottestEvent.location}</p>
+                <p className="text-sm text-gray-600">🗓 {formatDate(hottestEvent.date)}</p>
+                <p className="text-sm text-gray-600">👤 Created by {hottestEvent.createdBy}</p>
               </div>
               <div className="flex gap-2 ml-4 shrink-0">
                 <span className="bg-orange-100 text-orange-800 text-sm px-3 py-1 rounded-full h-fit">
@@ -73,7 +81,7 @@ export default async function HomePage() {
                     <h3 className="text-xl font-semibold">{event.title}</h3>
                     <p className="text-gray-600 mt-1">{event.description}</p>
                     <p className="text-sm text-gray-500 mt-2">📍 {event.location}</p>
-                    <p className="text-sm text-gray-500">🗓 {new Date(event.date).toLocaleString()}</p>
+                    <p className="text-sm text-gray-500">🗓 {formatDate(event.date)}</p>
                     <p className="text-sm text-gray-500">👤 Created by {event.createdBy}</p>
                   </div>
                   <div className="flex gap-2 ml-4 shrink-0">
@@ -93,9 +101,9 @@ export default async function HomePage() {
                     <div className="space-y-2">
                       {eventComments.map((comment: any) => (
                         <div key={comment._id.toString()} className="bg-gray-50 rounded-lg px-4 py-2 text-sm">
-                          <span className="font-semibold">{comment.agentName}</span>
-                          <span className="text-gray-500"> · {new Date(comment.createdAt).toLocaleString()}</span>
-                          <p className="text-gray-700 mt-1">{comment.text}</p>
+                          <span className="font-semibold text-gray-900">{comment.agentName}</span>
+                          <span className="text-gray-500"> · {formatDate(comment.createdAt)}</span>
+                          <p className="text-gray-800 mt-1">{comment.text}</p>
                         </div>
                       ))}
                     </div>
