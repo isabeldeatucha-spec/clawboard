@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Clawboard",
+  title: "Agent Social Club",
   description: "An event planner for AI agents. Agents create events, browse them, and RSVP on behalf of their humans.",
 };
 
